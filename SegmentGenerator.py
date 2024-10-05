@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import math
 
 THRESHOLD_M: float = 0.1
 THRESHOLD_M_SMALL: float = 0.05
@@ -16,18 +17,44 @@ def ground_line_filtering(input_arr: list) -> list:
     np_arr_z: np.array = np.array(points_z)
     counter_list: list = []
 
-    for ind, point in enumerate(len(input_arr)):
+    for ind in range(len(input_arr)):
+        point: tuple = input_arr[ind]
+
         if len(points_r) >= 2:
-            np.append(np_arr_r, point[0])
-            np.append(np_arr_z, point[1])
+            points_r.append(point[0])
+            points_z.append(point[1])
+            np_arr_r: np.array = np.array(points_r)
+            np_arr_z: np.array = np.array(points_z)
 
             design_matrix = np.vstack([np_arr_r, np.ones(len(np_arr_r))]).T
 
             reg_result = np.linalg.lstsq(design_matrix, np_arr_z, rcond=0)
-            m,b = reg_result[0]
-            residuals
-            
-            if (abs(m) <= THRESHOLD_M) and (m > THRESHOLD_M_SMALL or abs(b) <= THRESHOLD_B) and 
+            m, b = reg_result[0]
+            rmse: float = np.sqrt(reg_result[1] / len(reg_result[1]))
+
+            if (
+                (abs(np.rad2deg(np.arctan(m))) <= THRESHOLD_M)
+                and (rmse <= THRESHOLD_ERROR)
+                and (len(points_r) != len(input_arr))
+            ):
+                continue
+
+            np_arr_r = np_arr_r[:-1]
+            np_arr_z = np_arr_z[:-1]
+            design_matrix = np.vstack([np_arr_r, np.ones(len(np_arr_r))]).T
+
+            m, b = np.linalg.lstsq(design_matrix, np_arr_z, rcond=0)[0]
+
+            segs.append((m, b))
+            counter_list.append(ind)
+            np_arr_r = np.array([])
+            np_arr_z = np.array([])
+            ind -= 1
+        else:
+            points_r.append(point[0])
+            points_z.append(point[1])
+            np_arr_r: np.array = np.array(points_r)
+            np_arr_z: np.array = np.array(points_z)
 
         """    
         if i == len(input_arr) - 1:
@@ -58,4 +85,4 @@ def ground_line_filtering(input_arr: list) -> list:
         fin.append((r2, (s1, inter1), (s2, inter2)))
         """
 
-    return fin
+    return segs
