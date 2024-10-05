@@ -9,7 +9,7 @@ THRESHOLD_ERROR = 0.1
 
 
 def ground_line_filtering(input_arr: list) -> list:
-    fin: list = []
+    final_output: list = []
     segs: list = []
     points_r: list = []
     points_z: list = []
@@ -67,20 +67,24 @@ def ground_line_filtering(input_arr: list) -> list:
 
     for ind, point in enumerate(input_arr):
         if ind == 0:
-            fin.append((point[0], (segs[0][0], segs[0][1]), (segs[0][0], segs[0][1])))
+            final_output.append(
+                (point[0], (segs[0][0], segs[0][1]), (segs[0][0], segs[0][1]))
+            )
             continue
         elif ind == len(input_arr) - 1:
-            fin.append(
+            final_output.append(
                 (point[0], (segs[-1][0], segs[-1][1]), (segs[-1][0], segs[-1][1]))
             )
             continue
 
         for ind2, seg in enumerate(segs):
             if seg[2] < point[0] and point[0] < seg[3]:
-                fin.append((point[0], (seg[0], seg[1]), (seg[0], seg[1])))
+                final_output.append((point[0], (seg[0], seg[1]), (seg[0], seg[1])))
             else:
                 if seg[3] == point[0]:
                     nseg = segs[ind2 - 1]
-                    fin.append((point[0], (nseg[0], nseg[1]), (seg[0], seg[1])))
+                    final_output.append(
+                        (point[0], (nseg[0], nseg[1]), (seg[0], seg[1]))
+                    )
 
-    return fin
+    return final_output
