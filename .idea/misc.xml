@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Black">
+    <option name="pathToExecutable" value="/Library/Frameworks/Python.framework/Versions/3.9/bin/black" />
+    <option name="sdkName" value="Python 3.9 (DriverStation)" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9 (Perc-LIDAR-Helper3)" project-jdk-type="Python SDK" />
+</project>
