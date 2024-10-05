@@ -20,5 +20,14 @@ if __name__ == "__main__":
     ]
 
     ret: list = SegmentGenerator.ground_line_filtering(input)
-    ret_fin: list = [(round(float(i[0]), 3), round(float(i[1]), 3)) for i in ret]
-    print(ret_fin)
+
+    ret = [
+        (
+            round(float(i[0]), 1),
+            (round(float(i[1][0]), 3), round(float(i[1][1]), 3)),
+            (round(float(i[2][0]), 3), round(float(i[2][1]), 3)),
+        )
+        for i in ret
+    ]
+
+    print(ret)

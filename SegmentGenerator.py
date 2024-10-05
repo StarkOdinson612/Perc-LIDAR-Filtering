@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import math
 
-THRESHOLD_M: float = 0.1
+THRESHOLD_M: float = 10
 THRESHOLD_M_SMALL: float = 0.05
 THRESHOLD_B = 0.2
 THRESHOLD_ERROR = 0.1
@@ -45,7 +45,7 @@ def ground_line_filtering(input_arr: list) -> list:
 
             m, b = np.linalg.lstsq(design_matrix, np_arr_z, rcond=0)[0]
 
-            segs.append((m, b))
+            segs.append((m, b, np_arr_r[0], np_arr_r[-1]))
             counter_list.append(ind)
             np_arr_r = np.array([])
             np_arr_z = np.array([])
@@ -56,33 +56,31 @@ def ground_line_filtering(input_arr: list) -> list:
             np_arr_r: np.array = np.array(points_r)
             np_arr_z: np.array = np.array(points_z)
 
-        """    
-        if i == len(input_arr) - 1:
-            r2: float = input_arr[i][0]
+    print(counter_list)
 
-            z2: float = input_arr[i][1]
+    # ind_seg = 0
+    # for ind in range(len(input_arr)):
+    #     if ind in counter_list:
+    #         ind_seg += 1
 
-            s1: float = (z2 - z1) / (r2 - r1)
-            inter1: float = z2 - r2 * s1
+    #     fin +=
 
-            fin.append((r2, (s1, inter1), (s1, inter1)))
+    for ind, point in enumerate(input_arr):
+        if ind == 0:
+            fin.append((point[0], (segs[0][0], segs[0][1]), (segs[0][0], segs[0][1])))
+            continue
+        elif ind == len(input_arr) - 1:
+            fin.append(
+                (point[0], (segs[-1][0], segs[-1][1]), (segs[-1][0], segs[-1][1]))
+            )
             continue
 
-        r1: float = input_arr[i - 1][0] if i != 0 else 0
-        r2: float = input_arr[i][0]
-        r3: float = input_arr[i + 1][0]
+        for ind2, seg in enumerate(segs):
+            if seg[2] < point[0] and point[0] < seg[3]:
+                fin.append((point[0], (seg[0], seg[1]), (seg[0], seg[1])))
+            else:
+                if seg[3] == point[0]:
+                    nseg = segs[ind2 - 1]
+                    fin.append((point[0], (nseg[0], nseg[1]), (seg[0], seg[1])))
 
-        z1: float = input_arr[i - 1][1] if i != 0 else 0
-        z2: float = input_arr[i][1]
-        z3: float = input_arr[i + 1][1]
-
-        s1: float = (z2 - z1) / (r2 - r1)
-        s2: float = (z3 - z2) / (r3 - r2)
-
-        inter1: float = z2 - r2 * s1
-        inter2: float = z2 - r2 * s2
-
-        fin.append((r2, (s1, inter1), (s2, inter2)))
-        """
-
-    return segs
+    return fin
