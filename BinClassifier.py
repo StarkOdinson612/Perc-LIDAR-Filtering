@@ -1,14 +1,10 @@
 import random as rand
 import math
 import time
+import numpy as np
 
 
 def bin_classifier(Array2d: list[list[float]]) -> list[tuple[float]]:
-    # create segment randomly
-    Array2d = []
-    l = 20
-    for i in range(300000):
-        Array2d.append([rand.random() * l, rand.random() * l, rand.random() * l])
 
     start_time = time.time()
 
@@ -36,6 +32,26 @@ def bin_classifier(Array2d: list[list[float]]) -> list[tuple[float]]:
 
     ret: list[tuple[float]] = [(bin[0], bin[1]) for bin in Bins_min]
 
-    print(ret)
-
     return ret
+
+
+def bin_point_classifier(points: list[list[float]], num_bins: int):
+    ranges = np.sqrt(points[:, 0] ** 2 + points[:, 1] ** 2)
+    pts = []
+
+    for i in range(len(ranges)):
+        pts.append((ranges[i], points[i][2]))
+
+    # print("ranges")
+    # print(ranges)
+
+    # Calculate range for each point
+    # print(segments)
+    # import pdb; pdb.set_trace()
+    rmax = np.max(ranges)
+    rmin = np.min(ranges)
+    bin_size = (rmax - rmin) / num_bins
+    rbins = np.arange(rmin, rmax, bin_size)
+    regments = np.digitize(ranges, rbins) - 1
+
+    return (pts, regments)

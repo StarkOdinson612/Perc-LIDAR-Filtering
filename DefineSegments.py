@@ -1,13 +1,20 @@
 import math
-import math.pi as PI
+import numpy as np
+
+PI = math.pi
 
 
-def split_segments(points: list[list[float]], num_seg: int) -> list[list[float]]:
+def split_segments(points: list[list[float]], alpha: int) -> list[list[float]]:
 
-    theta: float = math.radians(200) / num_seg
+    # import pdb; pdb.set_trace()
+    angles = np.arctan2(points[:, 1], points[:, 0])  # Calculate angle for each point
+    adojangles = np.where(angles < 0, angles + 2 * np.pi, angles)
+    sepangles = np.arange(np.min(adojangles), np.max(adojangles), alpha)
+    angle_segs = np.digitize(angles, sepangles) - 1  # Map angles to segments
 
-    segments: list[list[float]] = [[] for _ in range(num_seg)]
+    # for idx in range(len(sepangles)):
+    #     seg = angle_segs == idx
+    #     seggy = points[seg]
+    #     # vis.update_visualizer_window(None, seggy)
 
-    for point in points:
-        angle: float = math.atan(point[0], point[1]) + PI / 2
-        index: int = angle // theta
+    return angle_segs

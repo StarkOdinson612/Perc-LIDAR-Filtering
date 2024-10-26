@@ -56,8 +56,6 @@ def ground_line_filtering(input_arr: list[tuple[float]]) -> list[tuple]:
             np_arr_r: np.array = np.array(points_r)
             np_arr_z: np.array = np.array(points_z)
 
-    print(counter_list)
-
     # ind_seg = 0
     # for ind in range(len(input_arr)):
     #     if ind in counter_list:
