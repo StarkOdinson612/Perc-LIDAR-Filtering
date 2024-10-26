@@ -52,6 +52,9 @@ def bin_point_classifier(points: list[list[float]], num_bins: int):
     rmin = np.min(ranges)
     bin_size = (rmax - rmin) / num_bins
     rbins = np.arange(rmin, rmax, bin_size)
+
     regments = np.digitize(ranges, rbins) - 1
 
-    return (pts, regments)
+    np.append(rbins, rmax)
+
+    return (rbins, pts, regments)

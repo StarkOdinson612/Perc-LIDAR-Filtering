@@ -48,7 +48,7 @@ if __name__ == "__main__":
             continue
 
         # this_bin: list[tuple[float]] = bin_classifier(segments)
-        bin_pts, bin_indices = bin_point_classifier(this_segment, NUM_BINS)
+        bin_ranges, bin_pts, bin_indices = bin_point_classifier(this_segment, NUM_BINS)
 
         bin_bits = []
 
@@ -70,7 +70,9 @@ if __name__ == "__main__":
         # print(bin_bits)
         line_segs = ground_line_filtering(bin_bits)
 
-        fin_points += [classify_points(bin_pts, bin_indices, line_segs, 0.1)]
+        fin_points += [
+            classify_points(bin_pts, bin_indices, line_segs, 0.1, bin_ranges)
+        ]
 
     print(fin_points)
 

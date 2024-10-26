@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 
 def classify_points(
@@ -7,12 +7,13 @@ def classify_points(
     bins: list[int],
     lines: list[tuple],
     threshold: float,
+    bin_ranges: list,
 ) -> list[list[float]]:
     res = np.empty((0, 2))
 
-    # plt.plot(points[:, 0], points[:, 1], "o", label="original data")
-    # for x in bin_ranges:
-    #     plt.axvline(x=x, color="g", linestyle="--")
+    plt.plot(points[:, 0], points[:, 1], "o", label="original data")
+    for x in bin_ranges:
+        plt.axvline(x=x, color="g", linestyle="--")
     for idx in range(len(lines)):
 
         baskmask = bins == idx
@@ -25,19 +26,21 @@ def classify_points(
         lomparey = m1 * left[:, 0] + b1
         romparey = m2 * right[:, 0] + b2
 
-        # LL = np.arange(bin_ranges[idx], r, 0.01)
-        # RR = np.arange(r, bin_ranges[idx + 1], 0.01)
-        # # Plotting without threshold
-        # plt.plot(LL, b1 + m1 * LL, "r")
-        # plt.plot(RR, b2 + m2 * RR, "b")
+        # Plotting without threshold
+        if idx < len(lines) - 1:
+            LL = np.arange(bin_ranges[idx], r, 0.01)
+            RR = np.arange(r, bin_ranges[idx + 1], 0.01)
+            plt.plot(LL, b1 + m1 * LL, "r")
+            plt.plot(RR, b2 + m2 * RR, "b")
 
-        # # Plotting with threshold
-        # plt.plot(LL, b1 + m1 * LL + threshold, "r--")
-        # plt.plot(RR, b2 + m2 * RR + threshold, "b--")
+            # Plotting with threshold
+            plt.plot(LL, b1 + m1 * LL + threshold, "r--")
+            plt.plot(RR, b2 + m2 * RR + threshold, "b--")
+
         leheasky = (lomparey + threshold) < left[:, 1]
         reheasky = (romparey + threshold) < right[:, 1]
         res = np.concatenate((res, np.concatenate((left[leheasky], right[reheasky]))))
 
-    # plt.show()
+    plt.show()
 
     return res
