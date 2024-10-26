@@ -8,7 +8,7 @@ THRESHOLD_B = 0.2
 THRESHOLD_ERROR = 0.1
 
 
-def ground_line_filtering(input_arr: list) -> list:
+def ground_line_filtering(input_arr: list[tuple[float]]) -> list[tuple]:
     final_output: list = []
     segs: list = []
     points_r: list = []
